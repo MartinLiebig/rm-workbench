@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<operators name="martins_workbench" version="6.0" docbundle="com/rapidminer/workbench/resources/i18n/OperatorsDocMartinsWorkbench">
+    <group key="operator_test">
+    	<operator>
+    		<key>my_own_operator</key>
+    		<class>com.rapidminer.workbench.operator.MyOwnOperator</class>
+    	</operator>
+    	<operator>
+    		<key>poisson_naive_bayes</key>
+    		<class>com.rapidminer.workbench.operator.PoissonNaiveBayes</class>
+    	</operator>
+   </group>
+</operators>

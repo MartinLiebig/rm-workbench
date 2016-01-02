@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<operatorHelp lang="en_EN">
+    <!--  This is an example how to specify the translation of operator keys to names. -->
+    <operator>
+      <key>my_own_operator</key>
+      <name>My Operator</name>
+    </operator>
+    <operator>
+      <key>poisson_naive_bayes</key>
+      <name>Poisson Naive Bayes</name>
+    </operator>
+    <!-- This is how group keys are translated: -->
+   
+    <group>
+      <key>operator_test</key>
+      <name>Example Group</name>
+    </group>
+</operatorHelp>
+
