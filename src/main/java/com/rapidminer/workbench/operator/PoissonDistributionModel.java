@@ -2,6 +2,8 @@ package com.rapidminer.workbench.operator;
 
 import java.util.logging.Level;
 
+import org.apache.commons.math3.analysis.function.Gaussian;
+import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.distribution.PoissonDistribution;
 
 import com.rapidminer.example.Attribute;
@@ -42,6 +44,8 @@ public class PoissonDistributionModel extends PredictionModel {
 	private double trainExamples;
 	/* PDs from apache. used to calc. the propability for a given x */
 	private PoissonDistribution PD[][];
+	
+	private NormalDistribution gaus[][];
 	
 	public PoissonDistributionModel(ExampleSet trainingExampleSet, SetsCompareOption sizeCompareOperator,
 			TypesCompareOption typeCompareOperator) {
@@ -111,9 +115,14 @@ public class PoissonDistributionModel extends PredictionModel {
 		double currentValue = 0;
 		double[] likelihood = new double[this.numberOfClasses];
 		PD = new PoissonDistribution[numberOfAttributes][numberOfClasses];
+		this.gaus = new NormalDistribution[numberOfAttributes][numberOfClasses];
+		
 		for(int att = 0; att < numberOfAttributes; att++){
 			for(int c = 0; c < numberOfClasses; c++){
-				PD[att][c] = new PoissonDistribution(distributionProperties[att][c][0]);
+				double mean = distributionProperties[att][c][0];
+				PD[att][c] = new PoissonDistribution(mean);
+				this.gaus[att][c] = 
+						new NormalDistribution(mean, Math.sqrt(mean));
 			}
 		}
 		
@@ -123,14 +132,20 @@ public class PoissonDistributionModel extends PredictionModel {
 				likelihood[classIndex] = 0;
 				for(Attribute attribute : exampleSet.getAttributes()){
 					currentValue = example.getValue(attribute);
-
-					double prop = Math.log(PD[attributeIndex][classIndex].probability((int) currentValue));
+					double prop;
+					if(currentValue < 500){
+						prop = Math.log(PD[attributeIndex][classIndex].probability((int) currentValue));
+					}
+					else{
+						prop = Math.log(gaus[attributeIndex][classIndex].density(currentValue));
+					}
 					if(Double.isFinite(prop)){
 						likelihood[classIndex] += prop;
 					}
 					attributeIndex++;
 				}
 			}
+			
 			double[] confidences = new double[this.numberOfClasses];
 			double sumOfConfidences = 0;
 			int mostPropableClass = -1;
